@@ -1,31 +1,45 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        String[] s=new String[]{"5", "-2","4", "C", "D", "9","+","+"};
-        System.out.print(calculatePoints(s)+"");
+        int[] a = {5, 6, 10, 3, 6};
+        System.out.println(solution(a));
     }
 
-    public static int calculatePoints(String[] ops) {
-        int result = Integer.MIN_VALUE;
-        List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < ops.length; i++) {
-            switch (ops[i]) {
-                case "D" -> list.add(2 * (list.get(list.size() - 1)));
-                case "C" -> list.remove(list.get(list.size() - 1));
-                case "+" -> list.add(
-                        list.get(list.size() - 1) + list.get(list.size() - 2)
-                );
-                default -> list.add(Integer.valueOf(ops[i]));
-            }
+    public static int solution(int[] A) {
+        boolean shorter = false;
+        HashSet<Integer> result=new HashSet<>();
+
+        if (A.length == 0 || A.length == 1) return 0;
+
+        if (A[0] == A[1]) {
+            result.add(1);
+            A[1] = A[0] - 1;
+            shorter = true;
+        } else if (A[0] > A[1]) {
+            shorter = true;
         }
 
-        result=list.stream()
-                .reduce(0, Integer::sum);
-        return result;
+        for (int i = 1; i < A.length - 1; i++) {
+            if (shorter) {
+                if (A[i] >= A[i + 1]) {
+                    result.add(i);
+                    A[i] = A[i + 1] - 1;
+                }
+            } else {
+                if (A[i] <= A[i + 1]) {
+                    result.add(i+1);
+                    A[i + 1] = A[i] - 1;
+                }
+            }
+            shorter = !shorter;
+        }
+
+        return result.size();
     }
 }
